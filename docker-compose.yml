@@ -1,0 +1,12 @@
+version: '3.2'
+
+services:
+  cscs-pollux:
+    image: crochat/cscs-pollux:latest
+    environment:
+      - OS_USERNAME=<YOUR_USER>
+      - OS_PASSWORD=<YOUR_PASSWORD>
+      - OS_PROJECT_NAME=<YOUR_PROJECT_NAME>
+    volumes:
+      - ./code:/code/
+    #command: ./reboot.py
