@@ -1,3 +1,7 @@
+# Requirements
+
+In order to use it, make sure you already have docker, docker-cli and docker-compose. Also, your user could be in **docker** group, or you can use sudo.
+
 # docker-compose.yml
 ## environment
 
@@ -44,3 +48,7 @@ pollux = cscs_pollux_env.Pollux()
 pollux.connect()
 pollux.select_project()
 </pre>
+
+# Launching container
+
+If you don't know how to use docker or docker-compose, you can simply run **./run.sh**
