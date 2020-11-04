@@ -49,6 +49,19 @@ pollux.connect()
 pollux.select_project()
 </pre>
 
+## Python API client doc
+
+| Component | OpenStack component part | Client name | Doc URL |
+| --------- | ------------------------ | ----------- | ------- |
+|Nova|Compute|python-novaclient|https://docs.openstack.org/python-novaclient/latest|
+|Glance|Image Service|python-glanceclient|https://docs.openstack.org/python-glanceclient/latest|
+|Swift|Object Storage|python-swiftclient|https://docs.openstack.org/python-swiftclient/latest|
+|Keystone|Identity Service|python-keystoneclient|https://docs.openstack.org/python-keystoneclient/latest|
+|Neutron|Networking|python-neutronclient|https://docs.openstack.org/python-neutronclient/latest|
+|Cinder|Block Storage|python-cinderclient|https://docs.openstack.org/python-cinderclient/latest|
+|Ceilometer|Telemetry|python-ceilometerclient|https://docs.openstack.org/python-ceilometerclient/pike|
+|Heat|Orchestration|python-heatclient|https://docs.openstack.org/python-heatclient/latest|
+
 # Launching container
 
 If you don't know how to use docker or docker-compose, you can simply run **./run.sh**
