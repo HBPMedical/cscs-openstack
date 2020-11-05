@@ -20,4 +20,4 @@ if key != os.linesep:
 for server in servers:
     if server['fail']:
         print('Initiating HARD reboot on server <%s>...' %(server['name']))
-        #server.reboot(reboot_type='HARD')
+        #server['server'].reboot(reboot_type='HARD')
