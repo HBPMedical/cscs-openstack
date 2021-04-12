@@ -13,16 +13,33 @@ In the case of Docker, this is because Docker doesn't check the MTU of the outgo
 to the default one, which is 1500.
 
 To check the MTU value of your network outgoing connection, type "ip link" and check which value is set for your outgoing (i.e. ens3) network interface.
+The value that you can see for docker0 is not relevant, as it seems that we can't change it.
 
-Then, you can also see which value is set on your default Docker interface: docker0.
+To check the MTU value of your Docker default bridge link, you can run:
 
-You can face different situations and fix them (if needed) with different ways:
+<pre>
+docker network inspect --format '{{index .Options "com.docker.network.driver.mtu"}}' bridge
+</pre>
 
-- Your docker0 MTU is less than or equal to the outgoing connection interface MTU. You don't need to do anything!
-- Your docker0 MTU is greater than the outgoing connection interface MTU
-  - You can fix the Docker daemon's MTU. You create a file /etc/docker/daemon.json and put '{"mtu": 1450}' (without single quotes) in it. Note that I've
-  put 1450 here for the example. Set it to the value of your outgoing connection interface. Once done, you have to restart the Docker daemon.
-  - You can fix your docker-compose files the same way it's done here, by adding or completing the networks section.
+You can fix the Docker daemon default bridge's MTU by creating a file /etc/docker/daemon.json and put '{"mtu": 1450}' (without single quotes) in it. Note that I've put 1450 here for the example. Set it to the value of your outgoing connection interface.
+
+Once done, you have to restart the Docker daemon.
+
+<pre>
+systemctl restart docker
+</pre>
+
+Then, you can inspect the docker network once again with the previous command, and you should see the new value. But it doesn't affect what you run with docker-compose (I'm not sure what it really affects, BTW)! Actually, as docker0 MTU is still 1500, whenever you will run the docker-compose the first time, it will create a new network with the bridge driver, and then, this network won't have any Option in it, if not specifically defined in the networks section of the docker-compose file.
+
+You can fix your docker-compose file the same way I did, by adding or completing the networks section:
+
+<pre>
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
+</pre>
 
 ## environment
 
