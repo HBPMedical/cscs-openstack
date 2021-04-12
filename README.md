@@ -3,6 +3,27 @@
 In order to use it, make sure you already have docker, docker-cli and docker-compose. Also, your user could be in **docker** group, or you can use sudo.
 
 # docker-compose.yml
+## network
+You can notice that a networks section has been defined, with a MTU adjusted to 1450. This is the value we have on CSCS' Pollux's OpenStack environment.
+
+Then, if you plan to run this container on a Pollux VM, you HAVE to adjust this value, because the default MTU is 1500, which means that the IP packets
+will be fragmented, resulting, in some cases, in an impossibility to reach the outside world from within a container.
+
+In the case of Docker, this is because Docker doesn't check the MTU of the outgoing connection at startup. Therefore, the value of the Docker MTU is set
+to the default one, which is 1500.
+
+To check the MTU value of your network outgoing connection, type "ip link" and check which value is set for your outgoing (i.e. ens3) network interface.
+
+Then, you can also see which value is set on your default Docker interface: docker0.
+
+You can face different situations and fix them (if needed) with different ways:
+
+- Your docker0 MTU is less than or equal to the outgoing connection interface MTU. You don't need to do anything!
+- Your docker0 MTU is greater than the outgoing connection interface MTU
+  - You can fix the Docker daemon's MTU. You create a file /etc/docker/daemon.json and put '{"mtu": 1450}' (without single quotes) in it. Note that I've
+  put 1450 here for the example. Set it to the value of your outgoing connection interface. Once done, you have to restart the Docker daemon.
+  - You can fix your docker-compose files the same way it's done here, by adding or completing the networks section.
+
 ## environment
 
 Just replace variables in docker-compose.yml. You can also set environment variables.
