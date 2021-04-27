@@ -103,3 +103,60 @@ pollux.select_project()
 # Launching container
 
 If you don't know how to use docker or docker-compose, you can simply run **./run.sh**
+
+# Interactively working inside the container
+
+## Connectivity and OpenStack CLI
+
+By default, the docker-compose.yml has the command commented, which means that you will not have a "one shot" container, but an interactive bash session inside.
+At this moment, when you arrive on the bash prompt, you can check in /etc/openstack to see the yaml clouds configuration files generated to use openstack command.
+Just typing "openstack --os-cloud <YOUR_PROJECT_NAME>", you can use openstack CLI.
+
+## Vagrant
+
+Now, you also have the possibility of using Vagrant from within the container, thanks to the vagrant-openstack-provider plugin that I've patched to be used with CSCS (see https://github.com/crochat/vagrant-openstack-provider). A default template-like Vagrantfile is generated in /root.
+You should copy it outside your container:
+
+* Create a VM work directory
+
+<pre>
+mkdir /code/vm
+</pre>
+
+* Copy the Vagrantfile in your VM directory
+
+<pre>
+cp /root/Vagrantfile /code/vm/
+</pre>
+
+* Edit the Vagrantfile. At the top of the file, you will find some variables to set.
+  * cloud: This should already contain your project name.
+  * ssh_username: This must be set to the default cloud username used to reach the machine in OpenStack. Usually "ubuntu" for Ubuntu or "debian" for Debian.
+  * ssh_keypair_name: This must be set to the SSH keypair configured in your OpenStack project.
+  * ssh_private_key_file: In your /code folder (which is linked to the "code" folder outside of the container), you should put your SSH private key to be used to match the public key set in the SSH keypair.
+* At the bottom of the file, you have the VM structure (see Vagrant to learn how to work with it).
+  * You can assign floating IP by uncommenting the os.floating_ip_pool and make it match your external network name in OpenStack. Also comment out the os.floating_ip_pool_always_allocate and set it to true.
+  * Alternatively, if you're running this container from within a VM already running in your OpenStack project, you can also decide not to use a floating IP, but to set a dynamic or fixed "local" IP, as defined in os.networks: "name" must match a network name defined in OpenStack, and "address" is used here as a fixed ip. If you want a DHCP IP, just comment the "address" variable.
+  * As an example, I also prepared a boot volume, attached to the machine, using a specific image (which must obviously match an existing image in OpenStack), with a specific size (GB) and a "delete_on_destroy" parameter to tell OpenStack if we want this volume to be destroyed whenever we destroy the VM.
+
+When you're done and want to create your VM, just make sure you're in the folder where you have your Vagrantfile. Vagrant works by context, and then, it's important to be in the folder where a Vagrantfile lives.
+
+To create the VM:
+
+<pre>
+vagrant up
+</pre>
+
+To connect to the machine via ssh
+
+<pre>
+vagrant ssh
+</pre>
+
+To destroy the VM
+
+<pre>
+vagrant destroy
+</pre>
+
+Also, vagrant --help will give you more useful commands. "vagrant openstack" will give you a list of OpenStack-oriented Vagrant subcommands.
