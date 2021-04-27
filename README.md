@@ -138,6 +138,7 @@ cp /root/Vagrantfile /code/vm/
   * You can assign floating IP by uncommenting the os.floating_ip_pool and make it match your external network name in OpenStack. Also comment out the os.floating_ip_pool_always_allocate and set it to true.
   * Alternatively, if you're running this container from within a VM already running in your OpenStack project, you can also decide not to use a floating IP, but to set a dynamic or fixed "local" IP, as defined in os.networks: "name" must match a network name defined in OpenStack, and "address" is used here as a fixed ip. If you want a DHCP IP, just comment the "address" variable.
   * As an example, I also prepared a boot volume, attached to the machine, using a specific image (which must obviously match an existing image in OpenStack), with a specific size (GB) and a "delete_on_destroy" parameter to tell OpenStack if we want this volume to be destroyed whenever we destroy the VM.
+  * Also, don't forget to configure the "os.security_groups" to match something which also exists in OpenStack.
 
 When you're done and want to create your VM, just make sure you're in the folder where you have your Vagrantfile. Vagrant works by context, and then, it's important to be in the folder where a Vagrantfile lives.
 
